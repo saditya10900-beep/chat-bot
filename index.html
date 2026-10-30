@@ -1,0 +1,1056 @@
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#212121">
+<title>ADITYA AI PRO</title>
+
+<style>
+:root {
+  --bg:#212121;
+  --side:#171717;
+  --panel:#2f2f2f;
+  --hover:#383838;
+  --text:#ececec;
+  --muted:#a0a0a0;
+  --border:#424242;
+  --accent:#a78bfa;
+  --user:#303030;
+}
+body.light {
+  --bg:#ffffff;
+  --side:#f5f5f5;
+  --panel:#eeeeee;
+  --hover:#e4e4e4;
+  --text:#202020;
+  --muted:#707070;
+  --border:#dddddd;
+  --accent:#7045d8;
+  --user:#eeeeee;
+}
+*{box-sizing:border-box}
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
+  height:100dvh;
+  overflow:hidden;
+}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer;color:inherit}
+.app{display:flex;height:100dvh}
+
+/* Sidebar */
+.sidebar {
+  width:265px;
+  background:var(--side);
+  padding:15px;
+  display:flex;
+  flex-direction:column;
+  flex-shrink:0;
+  transition:transform .25s;
+  z-index:10;
+}
+.logo {
+  display:flex;
+  align-items:center;
+  gap:11px;
+  font-size:19px;
+  font-weight:bold;
+  margin:5px 0 25px;
+}
+.logo-icon {
+  width:39px;height:39px;
+  border-radius:13px;
+  display:grid;place-items:center;
+  background:linear-gradient(135deg,#a78bfa,#6d28d9);
+  color:white;font-size:23px;
+}
+.new-chat,.side-button {
+  background:transparent;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:12px;
+  text-align:left;
+  margin-bottom:10px;
+  width:100%;
+}
+.new-chat:hover,.side-button:hover,.history-item:hover {
+  background:var(--hover);
+}
+.history-heading {
+  color:var(--muted);
+  font-size:12px;
+  margin:22px 5px 10px;
+}
+.history {
+  overflow-y:auto;
+  flex:1;
+}
+.history-item {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:5px;
+  width:100%;
+  padding:10px;
+  border:0;
+  border-radius:9px;
+  background:transparent;
+  text-align:left;
+  color:var(--text);
+  font-size:13px;
+}
+.history-item.active{background:var(--hover)}
+.history-title {
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+}
+.delete-chat {
+  background:none;border:0;color:var(--muted);
+  padding:3px 6px;
+}
+.sidebar-bottom{margin-top:12px}
+
+/* Main */
+.main {
+  flex:1;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+}
+.topbar {
+  height:65px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 20px;
+  gap:10px;
+}
+.top-left,.top-right {
+  display:flex;align-items:center;gap:12px;
+}
+.top-name{font-weight:bold;font-size:16px}
+.model-select {
+  background:var(--panel);
+  color:var(--text);
+  border:1px solid var(--border);
+  border-radius:9px;
+  padding:8px;
+  max-width:190px;
+  outline:none;
+}
+.icon-btn {
+  background:transparent;
+  border:1px solid var(--border);
+  border-radius:9px;
+  padding:9px 11px;
+}
+.icon-btn:hover{background:var(--hover)}
+#menuBtn{display:none}
+
+/* Chat */
+.chat-scroll {
+  flex:1;
+  overflow-y:auto;
+  scroll-behavior:smooth;
+}
+.chat-inner {
+  max-width:850px;
+  margin:auto;
+  padding:30px 22px;
+}
+.welcome {
+  min-height:55vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+.hero {
+  width:75px;height:75px;
+  display:grid;place-items:center;
+  border-radius:24px;
+  background:linear-gradient(135deg,#a78bfa,#6d28d9);
+  color:white;
+  font-size:38px;
+  margin-bottom:20px;
+  box-shadow:0 10px 35px #8b5cf644;
+}
+.welcome h1 {
+  font-size:35px;
+  margin:0 0 12px;
+}
+.gradient {
+  background:linear-gradient(90deg,#c4b5fd,#8b5cf6,#60a5fa);
+  color:transparent;
+  background-clip:text;
+}
+.welcome p {
+  color:var(--muted);
+  line-height:1.6;
+  max-width:460px;
+}
+.suggestions {
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  width:100%;
+  margin-top:30px;
+}
+.suggestion {
+  background:var(--panel);
+  color:var(--text);
+  border:1px solid var(--border);
+  border-radius:13px;
+  text-align:left;
+  padding:15px;
+  line-height:1.5;
+}
+.suggestion:hover{background:var(--hover)}
+.suggestion b{display:block;font-size:14px}
+.suggestion small{color:var(--muted)}
+
+/* Messages */
+.message {
+  display:flex;
+  gap:13px;
+  margin:25px 0;
+  align-items:flex-start;
+}
+.avatar {
+  width:35px;height:35px;
+  flex-shrink:0;
+  display:grid;place-items:center;
+  background:var(--panel);
+  border-radius:12px;
+  font-size:18px;
+}
+.message-body{flex:1;min-width:0}
+.message-name {
+  font-size:13px;
+  font-weight:bold;
+  margin:4px 0 9px;
+}
+.message-text {
+  font-size:15px;
+  line-height:1.8;
+  overflow-wrap:anywhere;
+  white-space:pre-wrap;
+}
+.message-text pre {
+  overflow:auto;
+  background:#111;
+  color:#eee;
+  padding:15px;
+  border-radius:10px;
+}
+.message-text code {
+  background:var(--panel);
+  padding:3px 5px;
+  border-radius:4px;
+}
+.message-text pre code{background:none;padding:0}
+.message-text a{color:var(--accent)}
+.message-actions {
+  display:flex;
+  gap:8px;
+  margin-top:8px;
+}
+.action {
+  background:none;
+  border:0;
+  color:var(--muted);
+  font-size:12px;
+  padding:5px;
+}
+.action:hover{color:var(--text)}
+.typing {
+  color:var(--muted);
+  font-size:13px;
+  animation:blink 1s infinite;
+}
+@keyframes blink{50%{opacity:.35}}
+
+/* Composer */
+.composer-area {
+  padding:10px 18px 16px;
+}
+.composer {
+  max-width:850px;
+  margin:auto;
+  border:1px solid var(--border);
+  background:var(--panel);
+  border-radius:20px;
+  padding:12px;
+}
+.composer:focus-within{border-color:var(--accent)}
+#prompt {
+  display:block;
+  width:100%;
+  resize:none;
+  min-height:42px;
+  max-height:180px;
+  border:0;
+  outline:0;
+  background:transparent;
+  color:var(--text);
+  padding:7px;
+  line-height:1.6;
+}
+.composer-bottom {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+.hint{font-size:11px;color:var(--muted)}
+.send {
+  width:40px;height:40px;
+  border:0;
+  border-radius:13px;
+  background:var(--text);
+  color:var(--bg);
+  font-size:22px;
+  font-weight:bold;
+}
+.send:disabled{opacity:.4;cursor:not-allowed}
+.footer {
+  text-align:center;
+  font-size:11px;
+  color:var(--muted);
+  margin-top:9px;
+}
+
+/* Modal */
+.overlay {
+  position:fixed;
+  inset:0;
+  background:#000a;
+  z-index:30;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:15px;
+}
+.overlay.show{display:flex}
+.modal {
+  background:var(--side);
+  border:1px solid var(--border);
+  border-radius:17px;
+  padding:23px;
+  width:100%;
+  max-width:440px;
+}
+.modal h2{margin:0 0 10px}
+.modal p {
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.6;
+}
+.field-label{display:block;margin:17px 0 7px;font-size:13px}
+.field {
+  width:100%;
+  padding:12px;
+  background:var(--bg);
+  border:1px solid var(--border);
+  color:var(--text);
+  border-radius:9px;
+  outline:none;
+}
+.modal-buttons {
+  display:flex;
+  justify-content:flex-end;
+  gap:9px;
+  margin-top:20px;
+}
+.primary,.secondary {
+  padding:11px 15px;
+  border-radius:9px;
+  border:0;
+}
+.primary{background:var(--accent);color:white}
+.secondary{background:var(--panel);color:var(--text)}
+.toast {
+  position:fixed;
+  z-index:50;
+  bottom:100px;
+  left:50%;
+  transform:translateX(-50%);
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:12px 17px;
+  display:none;
+  max-width:90%;
+  font-size:13px;
+}
+.toast.show{display:block}
+
+@media(max-width:700px) {
+  .sidebar {
+    position:fixed;
+    top:0;bottom:0;left:0;
+    transform:translateX(-105%);
+    box-shadow:10px 0 40px #0005;
+  }
+  .sidebar.open{transform:translateX(0)}
+  #menuBtn{display:block}
+  .topbar{padding:0 10px}
+  .chat-inner{padding:20px 13px}
+  .composer-area{padding:8px 10px 12px}
+  .suggestions{grid-template-columns:1fr}
+  .welcome h1{font-size:29px}
+  .model-select{max-width:145px}
+  .hint{font-size:10px}
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="logo">
+    <div class="logo-icon">✦</div>
+    <span>ADITYA AI PRO</span>
+  </div>
+
+  <button class="new-chat" id="newChat">＋ New Chat</button>
+
+  <div class="history-heading">RECENT CHATS</div>
+  <div class="history" id="history"></div>
+
+  <div class="sidebar-bottom">
+    <button class="side-button" id="settingsBtn">⚙ API Settings</button>
+    <button class="side-button" id="themeBtn">☀ Change Theme</button>
+    <button class="side-button" id="clearBtn">♲ Clear All Chats</button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <header class="topbar">
+    <div class="top-left">
+      <button class="icon-btn" id="menuBtn">☰</button>
+      <div class="top-name">ADITYA AI PRO</div>
+    </div>
+
+    <div class="top-right">
+      <select class="model-select" id="model">
+        <option value="openai/gpt-oss-20b">GPT OSS 20B</option>
+        <option value="llama-3.3-70b-versatile">Llama 3.3 70B</option>
+        <option value="llama-3.1-8b-instant">Llama 3.1 8B</option>
+      </select>
+      <button class="icon-btn" id="settingsTop">⚙</button>
+    </div>
+  </header>
+
+  <section class="chat-scroll" id="chatScroll">
+    <div class="chat-inner" id="chatContent"></div>
+  </section>
+
+  <div class="composer-area">
+    <div class="composer">
+      <textarea id="prompt" rows="1"
+        placeholder="ADITYA AI से कुछ भी पूछो..."></textarea>
+
+      <div class="composer-bottom">
+        <span class="hint">Enter भेजें · Shift + Enter नई लाइन</span>
+        <button class="send" id="sendBtn">↑</button>
+      </div>
+    </div>
+    <div class="footer">
+      ADITYA AI PRO can make mistakes. Verify important information.
+    </div>
+  </div>
+</main>
+</div>
+
+<!-- SETTINGS -->
+<div class="overlay" id="settingsOverlay">
+  <div class="modal">
+    <h2>⚙ API Settings</h2>
+    <p>अपनी Groq API key यहाँ दर्ज करो। Key इस browser session की memory में रहेगी।</p>
+
+    <label class="field-label">Groq API Key</label>
+    <input class="field" id="apiKey" type="password"
+      placeholder="gsk_..." autocomplete="off">
+
+    <label class="field-label">AI Model</label>
+    <select class="field" id="modalModel">
+      <option value="openai/gpt-oss-20b">GPT OSS 20B</option>
+      <option value="llama-3.3-70b-versatile">Llama 3.3 70B</option>
+      <option value="llama-3.1-8b-instant">Llama 3.1 8B</option>
+    </select>
+
+    <p>
+      Groq API Key यहाँ बनाओ:
+      <a href="https://console.groq.com/keys"
+         target="_blank" rel="noopener" style="color:#a78bfa">
+        Open Groq Console ↗
+      </a>
+    </p>
+
+    <div class="modal-buttons">
+      <button class="secondary" id="cancelSettings">Cancel</button>
+      <button class="secondary" id="removeKey">Remove Key</button>
+      <button class="primary" id="saveSettings">Connect</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+"use strict";
+
+const $ = id => document.getElementById(id);
+
+const API_URL =
+  "https://api.groq.com/openai/v1/chat/completions";
+
+const STORAGE = "aditya_ai_pro_chats";
+
+let apiKey = "";
+let chats = [];
+let currentId = null;
+let busy = false;
+let lastRequest = null;
+let abortController = null;
+
+function id() {
+  return Date.now().toString(36) +
+    Math.random().toString(36).slice(2,8);
+}
+
+function toast(message) {
+  const el = $("toast");
+  el.textContent = message;
+  el.classList.add("show");
+  clearTimeout(toast.timer);
+  toast.timer = setTimeout(
+    () => el.classList.remove("show"), 3000
+  );
+}
+
+function save() {
+  try {
+    localStorage.setItem(STORAGE, JSON.stringify(chats));
+  } catch {
+    toast("Chat save नहीं हो सकी।");
+  }
+}
+
+function load() {
+  try {
+    const data = JSON.parse(
+      localStorage.getItem(STORAGE) || "[]"
+    );
+    chats = Array.isArray(data) ? data.filter(c =>
+      c && typeof c.id === "string" &&
+      Array.isArray(c.messages)
+    ).slice(0,40) : [];
+  } catch {
+    chats = [];
+  }
+}
+
+function activeChat() {
+  return chats.find(c => c.id === currentId);
+}
+
+function newChat() {
+  if (busy) return toast("पहले जवाब पूरा होने दो।");
+
+  currentId = id();
+
+  chats.unshift({
+    id: currentId,
+    title: "New Chat",
+    messages: [],
+    time: Date.now()
+  });
+
+  chats = chats.slice(0,40);
+  save();
+  render();
+  closeSidebar();
+  $("prompt").focus();
+}
+
+function selectChat(chatId) {
+  if (busy) return;
+  currentId = chatId;
+  render();
+  closeSidebar();
+}
+
+function closeSidebar() {
+  $("sidebar").classList.remove("open");
+}
+
+function openSettings() {
+  $("apiKey").value = "";
+  $("settingsOverlay").classList.add("show");
+}
+
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g, ch => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  })[ch]);
+}
+
+// Safe, simple Markdown formatting.
+function markdown(value) {
+  let html = escapeHTML(value);
+  let blocks = [];
+
+  html = html.replace(/```([a-zA-Z0-9_-]*)\n?([\s\S]*?)```/g,
+    (_, language, code) => {
+      let index = blocks.length;
+      blocks.push(
+        "<pre><code>" + code.trim() + "</code></pre>"
+      );
+      return "%%CODE" + index + "%%";
+    });
+
+  html = html.replace(/`([^`\n]+)`/g, "<code>$1</code>");
+  html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+  html = html.replace(/\*(.+?)\*/g, "<em>$1</em>");
+  html = html.replace(/\n/g, "<br>");
+
+  html = html.replace(/%%CODE(\d+)%%/g,
+    (_, index) => "<br>" + blocks[Number(index)] + "<br>"
+  );
+
+  return html;
+}
+
+function addMessage(role, content) {
+  const chat = activeChat();
+  if (!chat) return;
+
+  chat.messages.push({role,content});
+
+  if (role === "user" && chat.title === "New Chat") {
+    chat.title = content.slice(0,42);
+  }
+
+  save();
+  render();
+}
+
+function renderHistory() {
+  const box = $("history");
+  box.replaceChildren();
+
+  chats.forEach(chat => {
+    const item = document.createElement("div");
+    item.className = "history-item" +
+      (chat.id === currentId ? " active" : "");
+
+    const title = document.createElement("span");
+    title.className = "history-title";
+    title.textContent = "▤ " + chat.title;
+    title.style.flex = "1";
+    title.addEventListener("click", () => selectChat(chat.id));
+
+    const del = document.createElement("button");
+    del.className = "delete-chat";
+    del.textContent = "×";
+    del.title = "Delete chat";
+
+    del.addEventListener("click", e => {
+      e.stopPropagation();
+      if (busy) return toast("पहले जवाब पूरा होने दो।");
+      chats = chats.filter(c => c.id !== chat.id);
+      if (currentId === chat.id) {
+        currentId = chats[0]?.id || null;
+      }
+      save();
+      if (!currentId) newChat();
+      else render();
+    });
+
+    item.append(title,del);
+    box.appendChild(item);
+  });
+}
+
+function render() {
+  renderHistory();
+
+  const root = $("chatContent");
+  root.replaceChildren();
+
+  const chat = activeChat();
+  const messages = chat?.messages || [];
+
+  if (!messages.length) {
+    const welcome = document.createElement("div");
+    welcome.className = "welcome";
+
+    welcome.innerHTML = `
+      <div class="hero">✦</div>
+      <h1>Hello, <span class="gradient">Aditya!</span></h1>
+      <p>मैं ADITYA AI PRO हूँ। मैं तुम्हारी पढ़ाई,
+      coding, creativity और सवालों में मदद कर सकता हूँ।</p>
+
+      <div class="suggestions">
+        <button class="suggestion" data-q="मुझे एक शानदार वेबसाइट का HTML CSS JavaScript कोड दो।">
+          <b>💻 Website बनाओ</b>
+          <small>अपनी वेबसाइट बनाना शुरू करो</small>
+        </button>
+
+        <button class="suggestion" data-q="मुझे एक मजेदार मोबाइल गेम का कोड दो।">
+          <b>🎮 Game बनाओ</b>
+          <small>अपना गेम तैयार करो</small>
+        </button>
+
+        <button class="suggestion" data-q="मुझे AI आसान हिंदी में समझाओ।">
+          <b>🧠 AI सीखो</b>
+          <small>नई चीजें सीखना शुरू करो</small>
+        </button>
+
+        <button class="suggestion" data-q="मेरे लिए एक अच्छा daily study timetable बनाओ।">
+          <b>📚 Study Plan</b>
+          <small>पढ़ाई का टाइमटेबल बनाओ</small>
+        </button>
+      </div>
+    `;
+
+    root.appendChild(welcome);
+
+    root.querySelectorAll("[data-q]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        $("prompt").value = btn.dataset.q;
+        sendMessage();
+      });
+    });
+  } else {
+    messages.forEach((msg,index) => {
+      const article = document.createElement("article");
+      article.className = "message";
+
+      const avatar = document.createElement("div");
+      avatar.className = "avatar";
+      avatar.textContent =
+        msg.role === "user" ? "👤" : "✦";
+
+      const body = document.createElement("div");
+      body.className = "message-body";
+
+      const name = document.createElement("div");
+      name.className = "message-name";
+      name.textContent =
+        msg.role === "user" ? "You" : "ADITYA AI PRO";
+
+      const text = document.createElement("div");
+      text.className = "message-text";
+      text.innerHTML = markdown(msg.content);
+
+      body.append(name,text);
+
+      if (msg.role === "assistant") {
+        const actions = document.createElement("div");
+        actions.className = "message-actions";
+
+        const copy = document.createElement("button");
+        copy.className = "action";
+        copy.textContent = "▢ Copy";
+        copy.onclick = async () => {
+          try {
+            await navigator.clipboard.writeText(msg.content);
+            toast("Copied!");
+          } catch {
+            toast("Copy नहीं हो सका।");
+          }
+        };
+
+        actions.appendChild(copy);
+
+        if (index === messages.length - 1) {
+          const regen = document.createElement("button");
+          regen.className = "action";
+          regen.textContent = "↻ Regenerate";
+          regen.onclick = regenerate;
+          actions.appendChild(regen);
+        }
+
+        body.appendChild(actions);
+      }
+
+      article.append(avatar,body);
+      root.appendChild(article);
+    });
+  }
+
+  if (busy) {
+    const typing = document.createElement("div");
+    typing.className = "message";
+    typing.innerHTML = `
+      <div class="avatar">✦</div>
+      <div class="message-body">
+        <div class="message-name">ADITYA AI PRO</div>
+        <div class="typing">सोच रहा हूँ ...</div>
+      </div>`;
+    root.appendChild(typing);
+  }
+
+  $("sendBtn").disabled = busy;
+  $("prompt").disabled = busy;
+
+  requestAnimationFrame(() => {
+    $("chatScroll").scrollTop =
+      $("chatScroll").scrollHeight;
+  });
+}
+
+function resizeInput() {
+  const el = $("prompt");
+  el.style.height = "auto";
+  el.style.height = Math.min(el.scrollHeight,180) + "px";
+}
+
+async function requestAI(messages) {
+  const model = $("model").value;
+
+  abortController = new AbortController();
+
+  const response = await fetch(API_URL,{
+    method:"POST",
+    signal:abortController.signal,
+    headers:{
+      "Content-Type":"application/json",
+      "Authorization":"Bearer " + apiKey
+    },
+    body:JSON.stringify({
+      model,
+      messages:[
+        {
+          role:"system",
+          content:
+            "You are ADITYA AI PRO, a friendly and helpful AI assistant. Respond in the language used by the user. If the user writes Hindi or Hinglish, reply in simple Hindi or Hinglish. Give clear and useful answers."
+        },
+        ...messages.slice(-20)
+      ],
+      temperature:0.7,
+      max_completion_tokens:2048,
+      stream:false
+    })
+  });
+
+  let data = {};
+  try { data = await response.json(); } catch {}
+
+  if (!response.ok) {
+    if (response.status === 401 || response.status === 403) {
+      throw new Error("API key गलत है या permission नहीं है।");
+    }
+    if (response.status === 429) {
+      throw new Error("Groq API limit पूरी हो गई। बाद में कोशिश करो।");
+    }
+    throw new Error(
+      data.error?.message || "API Error " + response.status
+    );
+  }
+
+  const answer = data.choices?.[0]?.message?.content;
+  if (!answer) throw new Error("AI से जवाब नहीं मिला।");
+
+  return answer;
+}
+
+async function sendMessage() {
+  if (busy) return;
+
+  const input = $("prompt");
+  const text = input.value.trim();
+  if (!text) return;
+
+  if (!apiKey) {
+    openSettings();
+    return toast("पहले Groq API key जोड़ो।");
+  }
+
+  if (!activeChat()) newChat();
+
+  input.value = "";
+  resizeInput();
+
+  addMessage("user",text);
+
+  lastRequest = currentId;
+  await generate();
+}
+
+async function generate() {
+  if (busy || !apiKey) return;
+
+  const chat = activeChat();
+  if (!chat) return;
+
+  const messages = chat.messages.map(m => ({
+    role:m.role,
+    content:m.content
+  }));
+
+  busy = true;
+  render();
+
+  try {
+    const answer = await requestAI(messages);
+    if (currentId !== lastRequest) return;
+    addMessage("assistant",answer);
+  } catch(error) {
+    if (error.name === "AbortError") return;
+    addMessage(
+      "assistant",
+      "माफ करना, जवाब नहीं मिल पाया।\n\nError: " +
+      (error.message || "Unknown error")
+    );
+  } finally {
+    busy = false;
+    abortController = null;
+    render();
+  }
+}
+
+async function regenerate() {
+  if (busy) return;
+  const chat = activeChat();
+  if (!chat || !chat.messages.length) return;
+
+  if (chat.messages[chat.messages.length-1].role === "assistant") {
+    chat.messages.pop();
+  }
+
+  if (!apiKey) {
+    openSettings();
+    return;
+  }
+
+  save();
+  lastRequest = currentId;
+  await generate();
+}
+
+// Events
+$("newChat").onclick = newChat;
+$("settingsBtn").onclick = openSettings;
+$("settingsTop").onclick = openSettings;
+
+$("menuBtn").onclick = () => {
+  $("sidebar").classList.toggle("open");
+};
+
+$("saveSettings").onclick = () => {
+  const key = $("apiKey").value.trim();
+  if (!key) return toast("API key दर्ज करो।");
+  if (/\s/.test(key)) return toast("API key में space नहीं होना चाहिए।");
+
+  apiKey = key;
+  $("model").value = $("modalModel").value;
+  $("settingsOverlay").classList.remove("show");
+  toast("Groq API key connect हो गई!");
+};
+
+$("removeKey").onclick = () => {
+  apiKey = "";
+  $("apiKey").value = "";
+  $("settingsOverlay").classList.remove("show");
+  toast("API key हटा दी गई।");
+};
+
+$("cancelSettings").onclick = () => {
+  $("settingsOverlay").classList.remove("show");
+};
+
+$("settingsOverlay").onclick = e => {
+  if (e.target === $("settingsOverlay")) {
+    $("settingsOverlay").classList.remove("show");
+  }
+};
+
+$("modalModel").onchange = () => {
+  $("model").value = $("modalModel").value;
+};
+
+$("model").onchange = () => {
+  $("modalModel").value = $("model").value;
+};
+
+$("themeBtn").onclick = () => {
+  document.body.classList.toggle("light");
+  localStorage.setItem(
+    "aditya_ai_theme",
+    document.body.classList.contains("light") ? "light" : "dark"
+  );
+};
+
+$("clearBtn").onclick = () => {
+  if (busy) return toast("पहले जवाब पूरा होने दो।");
+  if (!confirm("क्या सभी chats हटानी हैं?")) return;
+  chats = [];
+  currentId = null;
+  save();
+  newChat();
+};
+
+$("sendBtn").onclick = sendMessage;
+
+$("prompt").oninput = resizeInput;
+
+$("prompt").onkeydown = e => {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+};
+
+document.addEventListener("keydown",e => {
+  if (e.key === "Escape") {
+    $("settingsOverlay").classList.remove("show");
+    closeSidebar();
+  }
+});
+
+// Start
+load();
+
+if (!chats.length) {
+  currentId = id();
+  chats.push({
+    id:currentId,
+    title:"New Chat",
+    messages:[],
+    time:Date.now()
+  });
+} else {
+  currentId = chats[0].id;
+}
+
+if (localStorage.getItem("aditya_ai_theme") === "light") {
+  document.body.classList.add("light");
+}
+
+$("modalModel").value = $("model").value;
+render();
+
+})();
+</script>
+</body>
+</html>
